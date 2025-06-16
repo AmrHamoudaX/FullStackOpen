@@ -33,8 +33,9 @@ function Course({course}){
   return(
 
     <div>
-<Header course={course}/>
-    <Content parts={course.parts} />
+      <Header course={course}/>
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
 
   )
@@ -51,7 +52,8 @@ function Header({course}) {
 function Content({parts}) {
   return(
   <>
-    {parts.map((singlePart)=> 
+    {parts.map((singlePart)=>
+
       <Part key={singlePart.id} part={singlePart.name} exercise= {singlePart.exercises} />
       )}
   </>
@@ -69,9 +71,14 @@ function Part({part, exercise}){
 
 function Total({parts}) {
 
+  const sum = parts.reduce((acc,curr) => {
+  return (acc+ curr.exercises)},0)
+
   return(
   <>
-      <p>Number of exercises {parts[0].exercises + parts[1].exercises + parts[2].exercises}</p>
+      <p> Number of exercises 
+        {sum}
+      </p>
   </>
   )
 
