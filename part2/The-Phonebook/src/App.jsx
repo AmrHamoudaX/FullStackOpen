@@ -9,13 +9,16 @@ function App() {
 
   function handleSubmit(e){
     e.preventDefault()
-    setPersons(persons.concat({name: newName}))
-    setNewName('')
+   if(persons.find(person => person.name === newName)){
+      alert(`${newName} is already added to Phonebook`)
+    }else{
+      setPersons(persons.concat({name: newName}))
+      setNewName('')
+    }
 
   }
 
   function handleNewName(e){
-    console.log(`im input`,e.target.value)
     setNewName(e.target.value)
   }
 
