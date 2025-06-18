@@ -1,4 +1,7 @@
 import { useState } from "react"
+import Filter from "../components/Filter"
+import PersonForm from "../components/PersonForm"
+import Persons from "../components/Persons"
 
 
 function App() {
@@ -11,10 +14,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [toSearch, setToSearch] = useState('')
-  const [filtered, setFiltered] = useState(persons.filter(person => {
-   return toSearch == person.name.slice(0,toSearch.length)  
-    })
-  )
+  const [filtered, setFiltered] = useState([])
 
   function handleSubmit(e){
     e.preventDefault()
@@ -22,8 +22,6 @@ function App() {
       alert(`${newName} is already added to Phonebook`)
     }else{
       setPersons(persons.concat({name: newName,number: newNumber}))
-      setNewName('')
-      setNewNumber('')
     }
 
   }
@@ -48,42 +46,12 @@ function App() {
   return(
   <div>
       <h2> Phonebook </h2>
-          <p> filter shown with <input value={toSearch} onChange={handleToSearch} /> </p>
-      <form onSubmit={handleSubmit}>
-        <div>
+      <Filter toSearch={toSearch} handleToSearch={handleToSearch}/>
           <h2> Add a new </h2>
-        name: <input value={newName} onChange={handleNewName}/>
-        number: <input value={newNumber} onChange={handleNewNumber}/>
-        </div>
-        <div>
-        <button type='submit'> add </button>
-        </div>
-      </form>
+      <PersonForm newNumber={newNumber} handleNewNumber={handleNewNumber} newName={newName} handleNewName={handleNewName}  handleSubmit={handleSubmit} />
       <h2>Number</h2>
-      <div> 
-        {filtered.map(person => 
-
-          <li key={person.id}> {person.name}: {person.number} </li>
-        )}
-      </div>
+      <Persons filtered={filtered} toSearch={toSearch} persons={persons} />
 <div> toSearch: {toSearch} </div>
-     {/*{query === '' ? 
-      //persons.map(person=> 
-      //  <li key={person.id}> {person.name}: {person.number} </li>
-      //)
-      //:persons.find(person=> {
-      //    return person.name === query
-      //  <li key={person.id}> {person.name}: {person.number} </li>
-      //
-      //  })
-      //}
-      {}
-
-
-*/} 
-
-
-
       <div> debug: {newName}</div>
   </div>
   )
