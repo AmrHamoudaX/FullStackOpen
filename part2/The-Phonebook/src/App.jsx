@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import Filter from "../components/Filter"
 import PersonForm from "../components/PersonForm"
 import Persons from "../components/Persons"
-import axios from "axios"
+import personService from './services/persons'
 
 
 function App() {
@@ -13,24 +13,28 @@ function App() {
   const [filtered, setFiltered] = useState([])
 
   useEffect(()=> {
-    console.log('effect')
-    axios
-    .get('http://localhost:3001/persons')
+    personService
+    .getAll()
     .then(response => {
-        console.log(`fetching fulfilled`)
         setPersons(response.data)
       })
   },[])
-  console.log(`persons `, persons)
 
   function handleSubmit(e){
     e.preventDefault()
    if(persons.find(person => person.name === newName)){
       alert(`${newName} is already added to Phonebook`)
     }else{
-      setPersons(persons.concat({name: newName,number: newNumber}))
-    }
+      const newContact = {name: newName,number: newNumber}
 
+      personService
+        .create(newContact)
+        .then(response => {
+        setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
   }
 
   function handleNewName(e){
@@ -58,8 +62,7 @@ function App() {
       <PersonForm newNumber={newNumber} handleNewNumber={handleNewNumber} newName={newName} handleNewName={handleNewName}  handleSubmit={handleSubmit} />
       <h2>Number</h2>
       <Persons filtered={filtered} toSearch={toSearch} persons={persons} />
-<div> toSearch: {toSearch} </div>
-      <div> debug: {newName}</div>
+      <div> toSearch: {toSearch} </div>
   </div>
   )
 }
