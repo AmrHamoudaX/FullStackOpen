@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Filter from "../components/Filter"
 import PersonForm from "../components/PersonForm"
-import Persons from "../components/Persons"
+import Person from "../components/Person"
 import personService from './services/persons'
 
 
@@ -54,6 +54,20 @@ function App() {
     }))
   }
 
+  function handleDeleteOf(id) {
+    const filterRestOfData = persons.filter(p=> p.id !== id)
+    window.confirm('you sure you wanna del that?')
+    personService
+    .deleteId(id)
+    .then(() => {
+        console.log(`Deleted post with ID: ${id}`)
+        setPersons(filterRestOfData)
+      })
+    .catch(error => {
+        console.error(error)
+      })
+  }
+
   return(
   <div>
       <h2> Phonebook </h2>
@@ -61,7 +75,16 @@ function App() {
           <h2> Add a new </h2>
       <PersonForm newNumber={newNumber} handleNewNumber={handleNewNumber} newName={newName} handleNewName={handleNewName}  handleSubmit={handleSubmit} />
       <h2>Number</h2>
-      <Persons filtered={filtered} toSearch={toSearch} persons={persons} />
+
+      <div> 
+        {toSearch === ''? 
+        persons.map(person => 
+            <Person key={person.id} person={person} handleDelete={() => handleDeleteOf(person.id)}/>
+        )
+        :filtered.map(person => 
+            <Person key={person.id} person={person} handleDelete={() => handleDeleteOf(person.id)}/>
+        )}
+      </div>
       <div> toSearch: {toSearch} </div>
   </div>
   )
