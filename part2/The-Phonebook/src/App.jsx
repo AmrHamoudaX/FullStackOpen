@@ -10,7 +10,6 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [toSearch, setToSearch] = useState('')
-  const [filtered, setFiltered] = useState([])
 
   useEffect(()=> {
     personService
@@ -22,8 +21,23 @@ function App() {
 
   function handleSubmit(e){
     e.preventDefault()
-   if(persons.find(person => person.name === newName)){
-      alert(`${newName} is already added to Phonebook`)
+    const existingContact = persons.find(person => person.name === newName)
+    const editedContact = {...existingContact, number:newNumber}
+   if(persons.includes(existingContact)){
+    //Update an already existing user
+      personService
+      .update(existingContact.id, editedContact)
+      .then(()=> {
+          setPersons(persons.map(p => {
+            if(p.id === existingContact.id){
+              return {...p, number:newNumber}
+            }else{
+              return {...p}
+            }
+          }))
+          setNewName('')
+          setNewNumber('')
+        })
     }else{
       const newContact = {name: newName,number: newNumber}
 
@@ -47,12 +61,13 @@ function App() {
   }
   
   function handleToSearch(e){
-    const newSearch = e.target.value.toLowerCase()
+    const newSearch = e.target.value
     setToSearch(newSearch)
-    setFiltered(persons.filter(person => {
-   return newSearch == person.name.slice(0,newSearch.length).toLowerCase()  
-    }))
   }
+
+  const contactsToShow = persons.filter(person => {
+    return toSearch.toLowerCase() == person.name.slice(0,toSearch.length).toLowerCase()})
+  
 
   function handleDeleteOf(id) {
     const filterRestOfData = persons.filter(p=> p.id !== id)
@@ -77,11 +92,7 @@ function App() {
       <h2>Number</h2>
 
       <div> 
-        {toSearch === ''? 
-        persons.map(person => 
-            <Person key={person.id} person={person} handleDelete={() => handleDeleteOf(person.id)}/>
-        )
-        :filtered.map(person => 
+        {contactsToShow.map(person => 
             <Person key={person.id} person={person} handleDelete={() => handleDeleteOf(person.id)}/>
         )}
       </div>
