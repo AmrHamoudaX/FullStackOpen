@@ -3,6 +3,8 @@ import Filter from "../components/Filter"
 import PersonForm from "../components/PersonForm"
 import Person from "../components/Person"
 import personService from './services/persons'
+import Notification from "../components/Notification"
+import './index.css'
 
 
 function App() {
@@ -10,6 +12,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [toSearch, setToSearch] = useState('')
+  const [notificationMsg, setNotificationMsg] = useState(null)
 
   useEffect(()=> {
     personService
@@ -37,6 +40,7 @@ function App() {
           }))
           setNewName('')
           setNewNumber('')
+          setNotificationMsg(`${existingContact.name}'s number is changed to ${editedContact.number}`)
         })
     }else{
       const newContact = {name: newName,number: newNumber}
@@ -48,6 +52,12 @@ function App() {
           setNewName('')
           setNewNumber('')
         })
+
+        setNotificationMsg(`Added ${newContact.name}`)
+
+        setTimeout(() => {
+          setNotificationMsg(null)
+        }, 5000)
     }
   }
 
@@ -79,13 +89,19 @@ function App() {
         setPersons(filterRestOfData)
       })
     .catch(error => {
-        console.error(error)
+        setNotificationMsg(`Note ${persons.find(p=> p.id !== id)}`)
+        console.log(error)
+
+        setTimeout(() => {
+          setNotificationMsg(null)
+        }, 5000)
       })
   }
 
   return(
   <div>
       <h2> Phonebook </h2>
+      <Notification message={notificationMsg} />
       <Filter toSearch={toSearch} handleToSearch={handleToSearch}/>
           <h2> Add a new </h2>
       <PersonForm newNumber={newNumber} handleNewNumber={handleNewNumber} newName={newName} handleNewName={handleNewName}  handleSubmit={handleSubmit} />
