@@ -42,6 +42,14 @@ function App() {
           setNewNumber('')
           setNotificationMsg(`${existingContact.name}'s number is changed to ${editedContact.number}`)
         })
+      .catch(error => {
+        console.log(error)
+        setNotificationMsg(`${existingContact.name} has already been removed from server`)
+        setTimeout(() => {
+          setNotificationMsg(null)
+        }, 5000)
+
+        })
     }else{
       const newContact = {name: newName,number: newNumber}
 
@@ -79,22 +87,22 @@ function App() {
     return toSearch.toLowerCase() == person.name.slice(0,toSearch.length).toLowerCase()})
   
 
-  function handleDeleteOf(id) {
+  function handleDelete(id) {
     const filterRestOfData = persons.filter(p=> p.id !== id)
+    const personToDel = persons.find(p=> p.id === id)
     window.confirm('you sure you wanna del that?')
     personService
     .deleteId(id)
     .then(() => {
         console.log(`Deleted post with ID: ${id}`)
         setPersons(filterRestOfData)
-      })
-    .catch(error => {
-        setNotificationMsg(`Note ${persons.find(p=> p.id !== id)}`)
-        console.log(error)
-
+        setNotificationMsg(`${personToDel.name} is deleted successfuly`)
         setTimeout(() => {
           setNotificationMsg(null)
         }, 5000)
+      })
+    .catch((error)=> {
+        console.log(error)
       })
   }
 
@@ -109,7 +117,7 @@ function App() {
 
       <div> 
         {contactsToShow.map(person => 
-            <Person key={person.id} person={person} handleDelete={() => handleDeleteOf(person.id)}/>
+            <Person key={person.id} person={person} handleDelete={() => handleDelete(person.id)}/>
         )}
       </div>
       <div> toSearch: {toSearch} </div>
