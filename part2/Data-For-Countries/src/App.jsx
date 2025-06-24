@@ -15,7 +15,6 @@ function App() {
 
   useEffect(()=> {
     if(showCountries && showCountries.length ===1 ){
-      console.log(showCountries.length)
       axios .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${showCountries[0].toLowerCase()}`)
       .then(response => {
           const countryData = response.data
@@ -44,11 +43,11 @@ function App() {
     setSearchValue(e.target.value)
     }
 
+  function handleShow(key){
+    setSearchValue(key)
+  }
 
 
-console.log(chosenCountry)
-  console.log(showCountries)
-  console.log(showCountries && showCountries.length <=9 && showCountries.length >1)
   return(
   <>
       find countries <input value={searchValue} onChange={handleSearch} />
@@ -56,8 +55,10 @@ console.log(chosenCountry)
       {(showCountries && showCountries.length <=9 && showCountries.length >1) 
         ? showCountries.map(country => {
          return( <div key={country}>
-<p> {country} </p>
-</div>)
+            <p> {country}
+              <button onClick={()=> handleShow(country)}> Show </button>
+            </p>
+            </div>)
         })
         : null
       }
