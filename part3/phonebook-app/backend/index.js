@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
 
@@ -8,6 +9,7 @@ morgan.token("contentOfBody", function (req, res) {
 });
 
 //Middleware
+app.use(cors());
 app.use(express.json());
 app.use(
   morgan(
@@ -74,6 +76,7 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
+  console.log(body);
 
   if (!body.name || !body.number) {
     return response.status(400).json({
@@ -103,7 +106,7 @@ function generateId() {
   return String(randomId);
 }
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
