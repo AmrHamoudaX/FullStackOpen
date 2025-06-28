@@ -1,7 +1,9 @@
 import express from "express";
+import morgan from "morgan";
 
 const app = express();
 app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
@@ -59,6 +61,7 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 //POST Request
+
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
@@ -81,7 +84,6 @@ app.post("/api/persons", (request, response) => {
   };
 
   persons = persons.concat(person);
-  console.log(person);
   response.json(person);
 });
 
