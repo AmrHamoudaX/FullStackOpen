@@ -2,8 +2,18 @@ import express from "express";
 import morgan from "morgan";
 
 const app = express();
+
+morgan.token("contentOfBody", function (req, res) {
+  return JSON.stringify(req.body);
+});
+
+//Middleware
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :contentOfBody",
+  ),
+);
 
 let persons = [
   {
